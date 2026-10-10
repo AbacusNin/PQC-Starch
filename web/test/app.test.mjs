@@ -140,7 +140,12 @@ test('mobile navigation, print record, and untrusted text stay usable', async ()
     await page.locator('nav [data-route="tests"]').click();
     assert.equal(await page.locator('[data-select-test]').count(),33);
     assert.equal(await page.locator('.record').count(),1);
-    await page.locator('#view .term').first().click();
+    // The app closes the tooltip on scroll. If the term starts below the fold, the click's own scroll can land
+    // after the click and close it, so scroll first and let two frames pass before clicking.
+    const term=page.locator('#view .term').first();
+    await term.scrollIntoViewIfNeeded();
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    await term.click();
     // Under a loaded test run the tooltip can paint a moment after the click, so wait for it.
     await page.locator('#term-tooltip').waitFor({state:'visible',timeout:5000});
     await page.keyboard.press('Escape');
@@ -150,7 +155,8 @@ test('mobile navigation, print record, and untrusted text stay usable', async ()
     const resourceCount=await page.locator('.resource-card').count();
     assert.ok(resourceCount>51);
     assert.equal(await page.getByText('Research review: October 9, 2026.').count(),0);
-    assert.equal(await page.getByText('AudiOS').count(),0);
+    // AudiOS stays out of the resource library and source list; the header's style switch may name it.
+    assert.equal(await page.locator('#view').getByText('AudiOS').count(),0);
     assert.equal(await page.locator('#resource-library').evaluate(node=>node.open),false);
     await page.locator('#resource-library summary').click();
     assert.equal(await page.locator('#resource-library').evaluate(node=>node.open),true);

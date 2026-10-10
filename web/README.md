@@ -34,9 +34,11 @@ The app does not calculate a PQCMM level or decide that a product is compliant.
 
 Hover, keyboard-focus, or tap underlined terms to open a visible in-page definition. Press Escape or move away to close it. Every form control has a label that screen readers announce.
 
+The **Style** switch in the header changes the colors between AudiOS (dark, cyan and magenta, the default) and Regular (light, navy and teal). The choice is remembered in this browser only and is not part of the assessment or its exports. Both styles meet WCAG AA contrast, and printing is black on white either way.
+
 ## How the scorecard counts
 
-The scorecard reports record quality, not a product grade. Bars appear only for completeness: scope fields, mapped uses, and answered questions. Proof and support appear as counts with their source, because a bar would read like a grade.
+The scorecard reports record quality, not a product grade. Bars appear only for completeness: scope fields, mapped uses, and answered questions. Proof and support appear as counts with their source, because a bar would read like a grade. On the Scorecard page, "How counts are earned" lists seven numbered rules; each opens to show its detail. In summary:
 
 - A supported yes answer needs buyer acceptance and linked qualifying proof. The count is shown against the number of yes answers.
 - Qualifying proof is accepted, matches the exact product and path, names its artifact, issuer, and date, and has a file or source location. The scorecard groups qualifying proof by who produced it, so supplier statements cannot hide behind one total.

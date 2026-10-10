@@ -6,7 +6,8 @@
   <meta name="color-scheme" content="dark">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>PQC Buyer Workbook</title>
-  <link rel="stylesheet" href="styles.css">
+  <link id="style-audios" rel="stylesheet" href="styles.css">
+  <link id="style-regular" rel="stylesheet" href="styles-regular.css" media="not all">
 </head>
 <body>
   <div class="app-shell">
@@ -43,6 +44,7 @@
         <button type="button" id="menu-button" class="mobile-menu" aria-label="Open sections" aria-controls="rail" aria-expanded="false">Sections</button>
         <div class="top-context"><span id="product-line">Untitled assessment</span><small id="save-status" aria-live="polite">Saved locally</small><small id="export-status"></small></div>
         <div class="top-actions">
+          <div class="style-switch" role="group" aria-label="Color style"><span>Style</span><button type="button" data-theme-choice="audios" aria-pressed="true">AudiOS</button><button type="button" data-theme-choice="regular" aria-pressed="false">Regular</button></div>
           <button type="button" id="print-button" class="quiet-button">Print record</button>
           <button type="button" id="export-button" class="quiet-button">Export JSON</button>
           <button type="button" id="import-button" class="quiet-button">Import</button>

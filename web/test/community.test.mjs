@@ -2,6 +2,7 @@
 import test, {before, after} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
+import {readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
 import {startServer} from './server.mjs';
 
@@ -129,7 +130,9 @@ test('importing a share copy says what the sender removed', async () => {
 
 // ---- CycloneDX BOM import checks ----
 import {signBom} from './sign-bom.mjs';
-const sampleBom = JSON.parse(await fs.readFile(new URL('./fixtures/sample-bom.json', import.meta.url), 'utf8'));
+// Read synchronously: a top-level await here lets the runner finish the tests above it and run the after hook
+// before the before hook, which breaks filtered runs (--test-name-pattern) of every test below.
+const sampleBom = JSON.parse(readFileSync(new URL('./fixtures/sample-bom.json', import.meta.url), 'utf8'));
 
 async function importBom(page, doc, name = 'supplier-bom.json') {
   const file = `${await fs.mkdtemp(`${process.env.TEMP || '/tmp'}/bom-`)}/${name}`;
@@ -325,16 +328,24 @@ test('Licensing states the project license and links to it', async () => {
   } finally { await context.close(); }
 });
 
-test('the scorecard lists how counts are earned as numbered rules with lettered parts', async () => {
+test('the scorecard rules are numbered dropdowns that open to show their detail', async () => {
   const {context, page} = await open();
   try {
     await go(page, 'scorecard');
-    const rules = page.locator('.section').filter({has:page.locator('h2', {hasText:'How counts are earned'})}).locator('ol.rule-list');
-    assert.equal(await rules.locator(':scope > li').count(), 7);
-    assert.match(await rules.locator(':scope > li').nth(0).textContent(), /^A supported yes answer needs buyer acceptance and linked proof\./);
-    assert.equal(await rules.locator(':scope > li').nth(1).locator('ol > li').count(), 4);
-    assert.equal(await rules.locator(':scope > li').nth(2).locator('ol > li').count(), 4);
-    assert.match(await rules.locator(':scope > li').nth(6).textContent(), /final decision in Buyer record/);
+    const rules = page.locator('.section').filter({has:page.locator('h2', {hasText:'How counts are earned'})}).locator('ol.rule-list > li');
+    assert.equal(await rules.count(), 7);
+    assert.equal(await page.locator('ol.rule-list > li > details').count(), 7, 'every rule is a dropdown');
+    assert.equal(await page.locator('ol.rule-list details[open]').count(), 0, 'rules start closed');
+    assert.match(await rules.nth(0).locator('summary').textContent(), /^A supported yes answer needs buyer acceptance and linked proof[.]$/);
+    const proof = rules.nth(1);
+    assert.equal(await proof.locator('ol > li').first().isVisible(), false);
+    await proof.locator('summary').click();
+    assert.equal(await proof.locator('details').getAttribute('open'), '');
+    assert.equal(await proof.locator('ol > li').count(), 4);
+    assert.equal(await proof.locator('ol > li').first().isVisible(), true);
+    assert.equal(await rules.nth(2).locator('ol > li').count(), 4);
+    await rules.nth(6).locator('summary').press('Enter');
+    assert.match(await rules.nth(6).textContent(), /records that decision/);
   } finally { await context.close(); }
 });
 
@@ -354,5 +365,68 @@ test('the workbook uses the AudiOS dark theme with cyan and magenta accents and 
     assert.equal(look.magenta, '#e668b4');
     assert.equal(look.scheme, 'dark');
     assert.equal(await page.evaluate(() => document.fonts.check('12px "IBM Plex Mono"')), true);
+  } finally { await context.close(); }
+});
+
+// ---- Style switch ----
+const looks = page => page.evaluate(() => ({background:getComputedStyle(document.body).backgroundColor,
+  scheme:document.querySelector('meta[name="color-scheme"]').content, theme:document.documentElement.dataset.theme,
+  pressed:[...document.querySelectorAll('[data-theme-choice]')].map(button => `${button.dataset.themeChoice}:${button.getAttribute('aria-pressed')}`)}));
+
+test('the style switch moves between the AudiOS style and the regular style and remembers the choice', async () => {
+  const {context, page} = await open();
+  try {
+    assert.deepEqual(await looks(page), {background:'rgb(9, 11, 15)', scheme:'dark', theme:'audios', pressed:['audios:true', 'regular:false']});
+    await page.locator('[data-theme-choice="regular"]').click();
+    assert.deepEqual(await looks(page), {background:'rgb(244, 248, 250)', scheme:'light', theme:'regular', pressed:['audios:false', 'regular:true']});
+    await page.reload();
+    assert.equal((await looks(page)).theme, 'regular', 'the choice survives a reload');
+    await go(page, 'survey');
+    const contrast = await page.evaluate(() => {
+      const rgb = value => value.match(/[0-9]+([.][0-9]+)?/g).slice(0, 3).map(Number);
+      const lum = color => { const c = rgb(color).map(v => v / 255).map(v => v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+      const background = el => { for (let node = el; node; node = node.parentElement) { const b = getComputedStyle(node).backgroundColor; if (b !== 'rgba(0, 0, 0, 0)' && b !== 'transparent') return b; } return 'rgb(255,255,255)'; };
+      const ratio = el => { const [a, b] = [lum(getComputedStyle(el).color), lum(background(el))].sort((x, y) => y - x); return (a + 0.05) / (b + 0.05); };
+      return {help:ratio(document.querySelector('.help')), group:ratio(document.querySelector('.question-group'))};
+    });
+    assert.ok(contrast.help >= 4.5 && contrast.group >= 4.5, JSON.stringify(contrast));
+    await page.locator('[data-theme-choice="audios"]').click();
+    assert.equal((await looks(page)).background, 'rgb(9, 11, 15)');
+  } finally { await context.close(); }
+});
+
+test('at phone width the header fits in either style, with the style switch reachable', async () => {
+  const context = await browser.newContext({viewport:{width:390, height:844}});
+  const page = await context.newPage();
+  try {
+    await page.goto(BASE);
+    for (const style of ['audios', 'regular']) {
+      await page.locator(`[data-theme-choice="${style}"]`).click();
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), 0, `${style} page scrolls sideways`);
+      for (const button of await page.locator('.top-actions button:visible').all()) {
+        const box = await button.boundingBox();
+        assert.ok(box.x >= 0 && box.x + box.width <= 390, `${style}: ${await button.textContent()} is cut off`);
+      }
+    }
+  } finally { await context.close(); }
+});
+
+test('the path diagram takes its colors from the chosen style', async () => {
+  const {context, page} = await open(assessment({crypto:[
+    {id:'CU-001', protected:'Admin', sourceNode:'Browser', destinationNode:'Edge', usageStatus:'Observed'},
+    {id:'CU-002', protected:'Sync', sourceNode:'Edge', destinationNode:'Origin', usageStatus:'Configured'},
+    {id:'CU-003', protected:'Backup', sourceNode:'Origin', destinationNode:'Vault', usageStatus:'Vendor claim'}]}));
+  try {
+    await go(page, 'crypto');
+    const colors = () => page.evaluate(() => ({edges:[...document.querySelectorAll('.topology svg line')].map(line => getComputedStyle(line).stroke),
+      node:getComputedStyle(document.querySelector('.topology svg circle')).fill}));
+    const dark = await colors();
+    assert.deepEqual(dark.edges, ['rgb(79, 214, 137)', 'rgb(66, 220, 234)', 'rgb(107, 122, 140)']);
+    assert.equal(dark.node, 'rgb(21, 27, 38)');
+    await page.locator('[data-theme-choice="regular"]').click();
+    const light = await colors();
+    assert.deepEqual(light.edges, ['rgb(22, 129, 109)', 'rgb(44, 116, 166)', 'rgb(128, 147, 157)']);
+    assert.equal(light.node, 'rgb(230, 244, 242)');
+    assert.equal(await page.locator('.topology-legend .swatch').count(), 3);
   } finally { await context.close(); }
 });

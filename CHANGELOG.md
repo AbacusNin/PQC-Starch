@@ -4,7 +4,8 @@
 
 - **Theme:** the workbook uses the AudiOS dark theme: cyan and magenta accents, IBM Plex Sans and Mono (bundled under the SIL Open Font License), and square corners, without AudiOS's background grid. Printing stays black on white, and every contrast check still passes.
 - **Licensing page:** "Publishing this workbook" now states the Apache 2.0 with Commons Clause license, links to the license, notices, and source on GitHub, and lists the PQCMM data and fonts among the bundled third-party files.
-- **Scorecard:** "How counts are earned" is a numbered list, with lettered parts under the rules for qualifying proof and observed tests.
+- **Scorecard:** "How counts are earned" is a numbered list of seven rules. Each rule is a dropdown that starts closed and opens with a click or Enter to show its detail, with lettered parts under the rules for qualifying proof, observed tests, and work that earns no credit.
+- **Style switch:** a Style control in the header switches between AudiOS (dark, the default) and Regular (the original light navy and teal look). The choice is kept per browser. The path diagram's colors now come from the stylesheet, so they follow the chosen style, and a legend shows which line color means observed, configured, or listed.
 
 ## October 10, 2026: community release
 
