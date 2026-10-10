@@ -40,6 +40,7 @@
 - **NSA source:** the October 1, 2026 NSA release was confirmed in a browser and its wording matched; it attributes the 2027 and 2030 dates to CNSS Policy 15.
 - **Terms table:** terms on Sources are plain text, removing 63 keyboard stops that repeated the definition beside them.
 - **Schema version 5:** adds maturity criteria and the BOM dependency graph. Versions 1 to 4 still load.
+- **Record IDs:** IDs in a saved or imported assessment are limited to letters, digits, hyphens, and dots, and the Tests page escapes linked proof IDs. Before this, a shared file could add markup to the page; the CSP already blocked scripts.
 
 ## October 9, 2026: fixes from the five-perspective review
 
