@@ -42,8 +42,10 @@ const CRITERION_STATUSES = ['Not assessed','Met','Partial','Not met'];
 const text = (value, limit = 12000) => typeof value === 'string' ? value.slice(0, limit) : '';
 const record = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 const list = (value, limit = 500) => Array.isArray(value) ? value.slice(0, limit) : [];
-const ids = (value) => list(value, 100).map(v => text(v, 60).trim().toUpperCase()).filter(Boolean);
-const upper = value => text(value, 60).trim().toUpperCase();
+// Every saved and imported assessment passes through here, so IDs are held to the characters an ID can
+// contain. The page builds HTML from them in many places; this keeps a hostile file from adding markup.
+const ids = (value) => list(value, 100).map(v => text(v, 60).trim().toUpperCase().replace(/[^A-Z0-9.-]/g, '')).filter(Boolean);
+const upper = value => text(value, 60).trim().toUpperCase().replace(/[^A-Z0-9-]/g, '');
 // Reference fields also accept free text such as a URL, so only ID-shaped values are canonicalized.
 const ref = value => { const raw = text(value); return /^[A-Za-z]{1,4}-\d{1,6}$/.test(raw.trim()) ? raw.trim().toUpperCase() : raw; };
 

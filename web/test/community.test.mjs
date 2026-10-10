@@ -288,3 +288,24 @@ test('the scorecard exports a GRC package for the chosen platform, with attached
     assert.ok(!Object.keys(lean.files).some(name => name.startsWith('evidence/')));
   } finally { await context.close(); }
 });
+
+// ---- Record IDs from an imported or saved file cannot carry markup ----
+test('hostile record IDs from a saved or imported assessment never become page markup', async () => {
+  const hostile = tag => `"><b id="pwn-${tag}">x</b>`;
+  const {context, page} = await open(assessment({
+    evidence:[{id:hostile('ev'), linkedIds:['T01', hostile('link')], type:'Test trace', producer:'Buyer', artifact:'Trace', result:'Accepted'}],
+    crypto:[{id:hostile('cu'), protected:'Admin', sourceNode:'A', destinationNode:'B', cbomRef:'x'}],
+    actions:[{id:hostile('ac'), gap:'Gap', task:'Task', status:'Open'}],
+    boms:[{id:hostile('bm'), kind:'CBOM', target:'T'}],
+    licenses:[{id:hostile('li'), name:'License'}],
+    tests:{T01:{result:'Observed', cryptoUseId:hostile('ref')}}
+  }));
+  try {
+    for (const route of ['overview', 'tests', 'evidence', 'crypto', 'controls', 'actions', 'licensing', 'scorecard', 'attestations']) {
+      await go(page, route);
+      assert.equal(await page.locator('[id^="pwn" i]').count(), 0, route);
+    }
+    await page.locator('#print-button').evaluate(button => { window.print = () => {}; button.click(); });
+    assert.equal(await page.locator('[id^="pwn" i]').count(), 0, 'print record');
+  } finally { await context.close(); }
+});

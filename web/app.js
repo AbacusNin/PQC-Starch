@@ -478,7 +478,7 @@ function renderTests() {
           <div class="field full">${label('dependencyDetail','Dependencies and prerequisite IDs')}${area('dependencyDetail')}</div>
           <div class="field full">${label('testMethod','Test method')}${area('testMethod')}</div>
           <div class="field full">${label('acceptanceRule','Acceptance rule')}${area('acceptanceRule')}</div>
-        </div></details><div class="record-meta">Linked proof: ${evidenceFor(t[0]).map(item=>`${item.id} (${item.producer||'Unknown'})`).join(', ') || 'none yet'}</div></article>`;
+        </div></details><div class="record-meta">Linked proof: ${escapeHtml(evidenceFor(t[0]).map(item=>`${item.id} (${item.producer||'Unknown'})`).join(', ') || 'none yet')}</div></article>`;
     }).join('')}</div></div>`;
 }
 
