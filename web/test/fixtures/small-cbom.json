@@ -1,0 +1,104 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "serialNumber": "urn:uuid:11111111-2222-4333-8444-555555555551",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-10-08T12:00:00Z",
+    "component": {
+      "type": "application",
+      "name": "HarborLink OT Edge Gateway (fictional example)",
+      "version": "4.2.0-demo / HL-EG-420-LAB"
+    }
+  },
+  "components": [
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "cbom-mlkem",
+      "name": "ML-KEM-768",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "kem"
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "cbom-x25519",
+      "name": "X25519",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "key-agree"
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "cbom-ecdsa",
+      "name": "ECDSA P-384",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "signature"
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "cbom-aes",
+      "name": "AES-256-GCM",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "ae"
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "cbom-ssh",
+      "name": "SSH",
+      "cryptoProperties": {
+        "assetType": "protocol",
+        "protocolProperties": {
+          "type": "ssh"
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "cbom-ipsec",
+      "name": "IKEv2/IPsec",
+      "cryptoProperties": {
+        "assetType": "protocol",
+        "protocolProperties": {
+          "type": "ike"
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "cbom-cert",
+      "name": "Lab device certificate",
+      "cryptoProperties": {
+        "assetType": "certificate"
+      }
+    }
+  ],
+  "compositions": [
+    {
+      "aggregate": "incomplete",
+      "assemblies": [
+        "cbom-mlkem",
+        "cbom-x25519",
+        "cbom-ecdsa",
+        "cbom-aes",
+        "cbom-ssh",
+        "cbom-ipsec",
+        "cbom-cert"
+      ]
+    }
+  ]
+}

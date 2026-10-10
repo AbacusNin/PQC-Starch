@@ -1,0 +1,26 @@
+PQC Buyer Workbook and PQC claim verification kit
+Copyright 2026 Abacus
+
+Licensed under the Apache License, Version 2.0, with the Commons Clause
+License Condition v1.0. See LICENSE.
+
+In plain terms: anyone, including a company or a government agency, may use,
+change, and share this software free of charge, for example to review the
+products it is buying. Nobody may sell it, host it for a fee, or sell a
+product or service, including consulting or support, whose value comes
+entirely or substantially from it. This summary does not replace LICENSE.
+
+Third-party files keep their own licenses. The Commons Clause does not apply
+to them.
+
+- web/schema/bom-1.7.schema.json, spdx.schema.json, jsf-0.82.schema.json,
+  and cryptography-defs.schema.json: the CycloneDX 1.7.2 JSON Schemas from the
+  OWASP CycloneDX specification project, byte for byte as published, and
+  web/schema/cyclonedx-1.7.js, which wraps them for the browser. Apache License
+  2.0. License text: web/schema/LICENSE.CycloneDX.txt
+- web/vendor/jszip.min.js: JSZip 3.10.1, dual-licensed MIT or GPLv3, used
+  under the MIT license. License text: web/vendor/LICENSE.JSZip.md
+- tools/pqcmm/source/: the PKI Consortium PQC Maturity Model release v1.0.1
+  (github.com/pkic/pqcmm) as published, and web/data/pqcmm-1.0.1.js, converted
+  from it. Copyright (c) 2022 PKI Consortium, MIT license. License text:
+  tools/pqcmm/source/LICENSE.PQCMM.txt and web/data/LICENSE.PQCMM.txt

@@ -1,0 +1,37 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "serialNumber": "urn:uuid:11111111-2222-4333-8444-555555555552",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-10-08T12:00:00Z",
+    "component": {
+      "type": "firmware",
+      "name": "HarborLink OT Edge Gateway (fictional example)",
+      "version": "4.2.0-demo / HL-EG-420-LAB"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/harborlink-tls@4.2.0-demo",
+      "name": "harborlink-tls",
+      "version": "4.2.0-demo"
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/harborlink-updater@4.2.0-demo",
+      "name": "harborlink-updater",
+      "version": "4.2.0-demo"
+    }
+  ],
+  "compositions": [
+    {
+      "aggregate": "incomplete",
+      "assemblies": [
+        "pkg:generic/harborlink-tls@4.2.0-demo",
+        "pkg:generic/harborlink-updater@4.2.0-demo"
+      ]
+    }
+  ]
+}

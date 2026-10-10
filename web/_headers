@@ -1,0 +1,8 @@
+# Response headers for static hosts that read a _headers file (for example Netlify or Cloudflare Pages).
+# The page's meta CSP cannot set frame-ancestors, so framing protection must come from a header.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Cross-Origin-Opener-Policy: same-origin

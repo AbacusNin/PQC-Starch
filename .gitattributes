@@ -1,0 +1,9 @@
+# Text is stored with LF line endings.
+* text=auto eol=lf
+*.xlsx binary
+*.png binary
+# Third-party files stay byte for byte as their publishers released them, so their hashes keep matching.
+web/schema/*.json -text
+web/schema/*.txt -text
+web/vendor/** -text
+tools/pqcmm/source/** -text

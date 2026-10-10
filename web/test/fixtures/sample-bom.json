@@ -1,0 +1,238 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "serialNumber": "urn:uuid:3e671687-395b-41f5-a30f-a58921a69b79",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-10-01T12:00:00Z",
+    "lifecycles": [
+      {
+        "phase": "build"
+      }
+    ],
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "example-cbom-tool",
+          "version": "2.1.0"
+        }
+      ]
+    },
+    "authors": [
+      {
+        "name": "Example Supplier Build Team",
+        "email": "build@supplier.example"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "app-gateway",
+      "name": "Example Gateway",
+      "version": "4.2.0",
+      "supplier": {
+        "name": "Example Supplier"
+      }
+    },
+    "supplier": {
+      "name": "Example Supplier",
+      "url": [
+        "https://supplier.example"
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "lib-openssl",
+      "name": "openssl",
+      "version": "3.5.7",
+      "purl": "pkg:generic/openssl@3.5.7",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "lib-ssh",
+      "name": "example-ssh",
+      "version": "10.0",
+      "purl": "pkg:generic/example-ssh@10.0"
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "crypto-mlkem768",
+      "name": "ML-KEM-768",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "oid": "2.16.840.1.101.3.4.4.2",
+        "algorithmProperties": {
+          "primitive": "kem",
+          "parameterSetIdentifier": "768",
+          "executionEnvironment": "software-plain-ram",
+          "implementationPlatform": "x86_64",
+          "certificationLevel": [
+            "none"
+          ],
+          "cryptoFunctions": [
+            "keygen",
+            "encapsulate",
+            "decapsulate"
+          ],
+          "nistQuantumSecurityLevel": 3
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "crypto-x25519",
+      "name": "X25519",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "key-agree",
+          "executionEnvironment": "software-plain-ram",
+          "cryptoFunctions": [
+            "keygen"
+          ],
+          "classicalSecurityLevel": 128,
+          "nistQuantumSecurityLevel": 0
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "crypto-tls13",
+      "name": "TLS 1.3",
+      "cryptoProperties": {
+        "assetType": "protocol",
+        "protocolProperties": {
+          "type": "tls",
+          "version": "1.3",
+          "cipherSuites": [
+            {
+              "name": "TLS_AES_256_GCM_SHA384",
+              "identifiers": [
+                "0x13",
+                "0x02"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "crypto-server-cert",
+      "name": "gateway.example server certificate",
+      "cryptoProperties": {
+        "assetType": "certificate",
+        "certificateProperties": {
+          "subjectName": "CN=gateway.example",
+          "issuerName": "CN=Example Issuing CA",
+          "notValidBefore": "2026-01-01T00:00:00Z",
+          "notValidAfter": "2027-01-01T00:00:00Z",
+          "certificateFormat": "X.509"
+        }
+      }
+    },
+    {
+      "type": "cryptographic-asset",
+      "bom-ref": "crypto-server-key",
+      "name": "gateway.example server public key",
+      "cryptoProperties": {
+        "assetType": "related-crypto-material",
+        "relatedCryptoMaterialProperties": {
+          "type": "public-key",
+          "size": 256,
+          "format": "PEM",
+          "state": "active"
+        }
+      }
+    }
+  ],
+  "services": [
+    {
+      "bom-ref": "svc-admin",
+      "name": "Admin API",
+      "endpoints": [
+        "https://gateway.example/admin"
+      ],
+      "authenticated": true,
+      "x-trust-boundary": true,
+      "data": [
+        {
+          "flow": "bi-directional",
+          "classification": "internal"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "app-gateway",
+      "dependsOn": [
+        "lib-openssl",
+        "lib-ssh"
+      ]
+    },
+    {
+      "ref": "lib-openssl",
+      "provides": [
+        "crypto-mlkem768",
+        "crypto-x25519",
+        "crypto-tls13"
+      ]
+    },
+    {
+      "ref": "lib-ssh",
+      "dependsOn": [
+        "lib-openssl"
+      ]
+    },
+    {
+      "ref": "crypto-tls13",
+      "dependsOn": [
+        "crypto-mlkem768",
+        "crypto-x25519",
+        "crypto-server-cert"
+      ]
+    }
+  ],
+  "compositions": [
+    {
+      "aggregate": "incomplete_first_party_only",
+      "assemblies": [
+        "app-gateway"
+      ]
+    }
+  ],
+  "externalReferences": [
+    {
+      "type": "website",
+      "url": "https://supplier.example/product"
+    }
+  ],
+  "properties": [
+    {
+      "name": "example:build-id",
+      "value": "4.2.0-117"
+    }
+  ],
+  "definitions": {
+    "patents": [
+      {
+        "bom-ref": "patent-1",
+        "patentNumber": "US1234567",
+        "jurisdiction": "US",
+        "patentLegalStatus": "in-force",
+        "filingDate": "2020-01-15",
+        "grantDate": "2022-03-01"
+      }
+    ]
+  }
+}

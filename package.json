@@ -1,0 +1,22 @@
+{
+  "name": "pqc-claim-verification-kit",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "scripts": {
+    "test": "npm --prefix web test && node --test \"tools/replay/test/*.test.mjs\"",
+    "test:replay": "node --test \"tools/replay/test/*.test.mjs\"",
+    "replay:self-test": "node tools/replay/replay.mjs self-test",
+    "build:workbook": "node build_workbook.mjs",
+    "build:example": "node examples/build_fictional_example.mjs",
+    "build:schema": "node tools/build-schema-module.mjs",
+    "build:pqcmm": "node tools/pqcmm/convert.mjs"
+  },
+  "devDependencies": {
+    "exceljs": "4.4.0",
+    "yaml": "2.9.1"
+  },
+  "overrides": {
+    "uuid": "11.1.1"
+  }
+}

@@ -1,0 +1,47 @@
+name: pages
+# Publishes web/ to GitHub Pages, but only after the test workflow passes on a push to main.
+# Repository setting needed once: Settings > Pages > Build and deployment > Source: GitHub Actions.
+on:
+  workflow_run:
+    workflows: [test]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    # A pull request from a fork must never deploy, so only a passing push run (or a manual run) continues.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    steps:
+      # Actions are pinned to commit SHAs so a moved tag cannot change what runs.
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Assemble the site
+        # Only the files the page loads are published: no tests, packages, or harness code.
+        run: |
+          mkdir _site
+          rsync -a --exclude test/ --exclude node_modules/ --exclude .tmp/ --exclude 'package*.json' --exclude _headers --exclude README.md web/ _site/
+          cp LICENSE NOTICE _site/
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

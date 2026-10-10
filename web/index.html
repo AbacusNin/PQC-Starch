@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-guard>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>PQC Buyer Workbook</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail" id="rail">
+      <button type="button" class="rail-close" id="rail-close" aria-label="Close sections">Close</button>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">Q</div>
+        <div><strong>PQC Buyer Workbook</strong><span>Claim and proof review</span></div>
+      </div>
+      <p class="rail-intro">A working record for one product, one version, and one buyer decision.</p>
+      <nav class="nav" aria-label="Workbook sections">
+        <button type="button" data-route="overview"><span>01</span>Buyer record</button>
+        <button type="button" data-route="process"><span>02</span>Process flow</button>
+        <button type="button" data-route="survey"><span>03</span>Vendor survey <b id="survey-nav-count"></b></button>
+        <button type="button" data-route="crypto"><span>04</span>Crypto map</button>
+        <button type="button" data-route="evidence"><span>05</span>Evidence</button>
+        <button type="button" data-route="tests"><span>06</span>Tests</button>
+        <button type="button" data-route="controls"><span>07</span>Control proof</button>
+        <button type="button" data-route="maturity"><span>08</span>Maturity criteria</button>
+        <button type="button" data-route="actions"><span>09</span>Actions</button>
+        <button type="button" data-route="licensing"><span>10</span>Licensing</button>
+        <button type="button" data-route="scorecard"><span>11</span>Scorecard</button>
+        <button type="button" data-route="attestations"><span>12</span>Claim drafts</button>
+        <button type="button" data-route="sources"><span>13</span>Terms and sources</button>
+      </nav>
+      <div class="rail-foot">
+        <strong>Stored on this device</strong>
+        <span>No account. No telemetry. Export a copy before clearing browser data.</span>
+      </div>
+    </aside>
+
+    <div class="work-area">
+      <header class="topbar">
+        <button type="button" id="menu-button" class="mobile-menu" aria-label="Open sections" aria-controls="rail" aria-expanded="false">Sections</button>
+        <div class="top-context"><span id="product-line">Untitled assessment</span><small id="save-status" aria-live="polite">Saved locally</small><small id="export-status"></small></div>
+        <div class="top-actions">
+          <button type="button" id="print-button" class="quiet-button">Print record</button>
+          <button type="button" id="export-button" class="quiet-button">Export JSON</button>
+          <button type="button" id="import-button" class="quiet-button">Import</button>
+        </div>
+      </header>
+      <main id="view" tabindex="-1"></main>
+      <footer class="page-foot">This tool records evidence and review decisions. It does not certify a product or decide which policy applies.</footer>
+    </div>
+  </div>
+
+  <dialog id="record-dialog" class="record-dialog" aria-labelledby="dialog-title">
+    <form method="dialog" id="record-form">
+      <div class="dialog-head"><div><p class="eyebrow" id="dialog-kind"></p><h2 id="dialog-title"></h2></div><button type="button" class="icon-button" id="dialog-close" aria-label="Close">×</button></div>
+      <div id="dialog-body"></div>
+      <div class="dialog-actions"><button type="button" class="quiet-button" id="dialog-cancel">Cancel</button><button type="submit" class="primary-button">Save record</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="transfer-dialog" class="transfer-dialog" aria-labelledby="transfer-title">
+    <div class="dialog-head"><div><p class="eyebrow">Local file</p><h2 id="transfer-title">Export assessment</h2></div><button type="button" class="icon-button" id="transfer-close" aria-label="Close">×</button></div>
+    <div id="transfer-body"></div>
+  </dialog>
+  <input id="import-file" type="file" accept=".json,application/json" hidden>
+  <input id="compare-file" type="file" accept=".json,application/json" hidden>
+  <input id="replay-import-file" type="file" accept=".json,application/json" hidden>
+  <input id="criteria-file" type="file" accept=".json,.csv,.xlsx,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+  <input id="record-import-file" type="file" accept=".json,.csv,.xlsx,text/csv,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="term-tooltip" class="term-tooltip" role="tooltip" hidden></div>
+  <div id="print-root" aria-hidden="true"></div>
+  <script src="vendor/jszip.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

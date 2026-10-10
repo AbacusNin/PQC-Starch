@@ -1,0 +1,14 @@
+{
+  "name": "pqc-buyer-workbook",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 \"test/*.test.mjs\"",
+    "test:logic": "node --test test/logic.test.mjs"
+  },
+  "devDependencies": {
+    "jszip": "3.10.1",
+    "playwright": "1.62.1"
+  }
+}
