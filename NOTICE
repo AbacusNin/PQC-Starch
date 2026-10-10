@@ -20,6 +20,9 @@ to them.
   2.0. License text: web/schema/LICENSE.CycloneDX.txt
 - web/vendor/jszip.min.js: JSZip 3.10.1, dual-licensed MIT or GPLv3, used
   under the MIT license. License text: web/vendor/LICENSE.JSZip.md
+- web/fonts/: IBM Plex Sans and IBM Plex Mono (Latin subsets), Copyright
+  IBM Corp., SIL Open Font License 1.1. License text:
+  web/fonts/LICENSE-OFL.txt
 - tools/pqcmm/source/: the PKI Consortium PQC Maturity Model release v1.0.1
   (github.com/pkic/pqcmm) as published, and web/data/pqcmm-1.0.1.js, converted
   from it. Copyright (c) 2022 PKI Consortium, MIT license. License text:

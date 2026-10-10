@@ -2,6 +2,8 @@
 * text=auto eol=lf
 *.xlsx binary
 *.png binary
+*.woff2 binary
+web/fonts/** -text
 # Third-party files stay byte for byte as their publishers released them, so their hashes keep matching.
 web/schema/*.json -text
 web/schema/*.txt -text

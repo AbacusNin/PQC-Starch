@@ -309,3 +309,50 @@ test('hostile record IDs from a saved or imported assessment never become page m
     assert.equal(await page.locator('[id^="pwn" i]').count(), 0, 'print record');
   } finally { await context.close(); }
 });
+
+// ---- Licensing text, scorecard rules, and the AudiOS-style theme ----
+test('Licensing states the project license and links to it', async () => {
+  const {context, page} = await open();
+  try {
+    await go(page, 'licensing');
+    const section = page.locator('.section').filter({has:page.locator('h2', {hasText:'Publishing this workbook'})});
+    const text = await section.textContent();
+    assert.match(text, /Apache License 2\.0 with the Commons Clause/);
+    assert.match(text, /Nobody may sell it/);
+    assert.doesNotMatch(text, /does not yet have a selected/);
+    assert.equal(await section.locator('a[href="https://github.com/AbacusNin/PQC-Starch/blob/main/LICENSE"]').count(), 1);
+    assert.equal(await section.locator('a[href="https://github.com/AbacusNin/PQC-Starch/blob/main/NOTICE"]').count(), 1);
+  } finally { await context.close(); }
+});
+
+test('the scorecard lists how counts are earned as numbered rules with lettered parts', async () => {
+  const {context, page} = await open();
+  try {
+    await go(page, 'scorecard');
+    const rules = page.locator('.section').filter({has:page.locator('h2', {hasText:'How counts are earned'})}).locator('ol.rule-list');
+    assert.equal(await rules.locator(':scope > li').count(), 7);
+    assert.match(await rules.locator(':scope > li').nth(0).textContent(), /^A supported yes answer needs buyer acceptance and linked proof\./);
+    assert.equal(await rules.locator(':scope > li').nth(1).locator('ol > li').count(), 4);
+    assert.equal(await rules.locator(':scope > li').nth(2).locator('ol > li').count(), 4);
+    assert.match(await rules.locator(':scope > li').nth(6).textContent(), /final decision in Buyer record/);
+  } finally { await context.close(); }
+});
+
+test('the workbook uses the AudiOS dark theme with cyan and magenta accents and no grid', async () => {
+  const {context, page} = await open();
+  try {
+    const look = await page.evaluate(() => {
+      const body = getComputedStyle(document.body);
+      const active = getComputedStyle(document.querySelector('.nav button.active'));
+      return {background:body.backgroundColor, image:body.backgroundImage, font:body.fontFamily, accent:active.color,
+        magenta:getComputedStyle(document.documentElement).getPropertyValue('--magenta').trim(), scheme:document.querySelector('meta[name="color-scheme"]').content};
+    });
+    assert.equal(look.background, 'rgb(9, 11, 15)');
+    assert.doesNotMatch(look.image, /linear-gradient/, 'no grid lines');
+    assert.match(look.font, /IBM Plex Sans/);
+    assert.equal(look.accent, 'rgb(66, 220, 234)');
+    assert.equal(look.magenta, '#e668b4');
+    assert.equal(look.scheme, 'dark');
+    assert.equal(await page.evaluate(() => document.fonts.check('12px "IBM Plex Mono"')), true);
+  } finally { await context.close(); }
+});

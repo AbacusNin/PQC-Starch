@@ -1,5 +1,11 @@
 # Changelog
 
+## October 10, 2026: look and wording
+
+- **Theme:** the workbook uses the AudiOS dark theme: cyan and magenta accents, IBM Plex Sans and Mono (bundled under the SIL Open Font License), and square corners, without AudiOS's background grid. Printing stays black on white, and every contrast check still passes.
+- **Licensing page:** "Publishing this workbook" now states the Apache 2.0 with Commons Clause license, links to the license, notices, and source on GitHub, and lists the PQCMM data and fonts among the bundled third-party files.
+- **Scorecard:** "How counts are earned" is a numbered list, with lettered parts under the rules for qualifying proof and observed tests.
+
 ## October 10, 2026: community release
 
 ### Release and hosting
