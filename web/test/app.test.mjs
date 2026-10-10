@@ -141,7 +141,8 @@ test('mobile navigation, print record, and untrusted text stay usable', async ()
     assert.equal(await page.locator('[data-select-test]').count(),33);
     assert.equal(await page.locator('.record').count(),1);
     await page.locator('#view .term').first().click();
-    assert.equal(await page.locator('#term-tooltip').isVisible(),true);
+    // Under a loaded test run the tooltip can paint a moment after the click, so wait for it.
+    await page.locator('#term-tooltip').waitFor({state:'visible',timeout:5000});
     await page.keyboard.press('Escape');
     await page.locator('#menu-button').click();
     await page.locator('[data-route="sources"]').click();
